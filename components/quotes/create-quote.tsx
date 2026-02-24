@@ -410,7 +410,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
           </Card>
 
           {/* Admin Information Header */}
-          <div className="bg-muted rounded-lg px-4 py-3">
+          <div className="bg-accent rounded-lg px-4 py-3">
             <h2 className="font-semibold text-sm text-foreground">Admin Information</h2>
           </div>
 
@@ -780,12 +780,12 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
           </Card>
 
           {/* Tax Rate Header */}
-          <div className="bg-muted rounded-lg px-4 py-3">
+          <div className="bg-accent rounded-lg px-4 py-3">
             <h2 className="font-semibold text-sm text-foreground">Tax Rate</h2>
           </div>
 
           {/* Tax Rate */}
-          <Card className="p-4 bg-accent border border-border">
+          <Card className="p-4 bg-card border border-border">
             <Label htmlFor="tax-rate" className="text-sm font-semibold block mb-3">
               Standard Tax Rate
             </Label>
@@ -815,12 +815,12 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
           </Card>
 
           {/* Quote Items Header */}
-          <div className="bg-muted rounded-lg px-4 py-3">
+          <div className="bg-accent rounded-lg px-4 py-3">
             <h2 className="font-semibold text-sm text-foreground">Quote Items</h2>
           </div>
 
           {/* Add Item Section */}
-          <Card className="p-4 bg-accent border-accent-highlight">
+          <Card className="p-4 bg-card border-border">
             <Label className="text-sm font-semibold block mb-3">Add Items</Label>
             <div className="space-y-3">
               <Select value={selectedProduct || ""} onValueChange={setSelectedProduct}>
@@ -851,7 +851,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
           </Card>
 
           {/* Added Items Table */}
-          <Card className="p-4 bg-accent border-accent-highlight">
+          <Card className="p-4 bg-card border-border">
             <h3 className="font-semibold text-sm mb-4">Line Items ({items.length})</h3>
             {items.length === 0 ? (
               <div className="text-center py-8">
@@ -967,12 +967,12 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
           </Card>
 
           {/* Additional Notes Header */}
-          <div className="bg-muted rounded-lg px-4 py-3">
+          <div className="bg-accent rounded-lg px-4 py-3">
             <h2 className="font-semibold text-sm text-foreground">Additional Notes</h2>
           </div>
 
           {/* Notes */}
-          <Card className="p-4 bg-accent border-accent-highlight">
+          <Card className="p-4 bg-card border-border">
             <Label htmlFor="notes" className="text-sm font-semibold mb-2 block">
               Notes
             </Label>

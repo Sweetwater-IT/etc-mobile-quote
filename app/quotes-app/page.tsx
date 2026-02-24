@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Eye, Edit3, Menu, ChevronRight } from "lucide-react"
+import { Plus, Eye, Edit3, Menu, ChevronRight, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import CreateQuote from "@/components/quotes/create-quote"
@@ -17,7 +17,7 @@ const mockQuotes = [
   { id: 5, number: "Q-005", customer: "Coast Builders", amount: "$9,200", status: "REJECTED", date: "2025-02-16" },
 ]
 
-export default function Home() {
+export default function QuotesApp() {
   const [activeTab, setActiveTab] = useState<"home" | "create" | "view" | "edit">("home")
 
   // Calculate stats
@@ -59,7 +59,7 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="bg-accent border-b border-border p-4">
+      <div className="bg-accent border-b border-accent-highlight p-4">
         <div className="flex items-start justify-between mb-4">
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Project Quotes</p>
@@ -69,7 +69,7 @@ export default function Home() {
         </div>
 
         {/* Stats Row */}
-        <div className="bg-muted rounded-lg p-4 text-center inline-block w-full">
+        <div className="bg-background/80 rounded-lg p-4 text-center inline-block w-full">
           <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-2">Total Quotes</p>
           <p className="text-4xl font-bold text-primary">{totalQuotes}</p>
         </div>
@@ -78,13 +78,13 @@ export default function Home() {
       {/* Main Navigation */}
       <main className="p-4 pb-20 space-y-4">
         <Card
-          className="p-6 bg-accent border border-border cursor-pointer active:scale-[0.98] transition-transform"
+          className="p-6 bg-accent border-accent-highlight cursor-pointer active:scale-[0.98] transition-transform"
           onClick={() => setActiveTab("create")}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-primary/10 p-3 rounded-lg">
-                <Plus className="h-8 w-8 text-primary" />
+                <Plus className="h-8 w-8 text-accent-highlight" />
               </div>
               <div>
                 <h2 className="text-lg font-semibold">Create New Quote</h2>
@@ -96,13 +96,13 @@ export default function Home() {
         </Card>
 
         <Card
-          className="p-6 bg-accent border border-border cursor-pointer active:scale-[0.98] transition-transform"
+          className="p-6 bg-accent border-accent-highlight cursor-pointer active:scale-[0.98] transition-transform"
           onClick={() => setActiveTab("view")}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-primary/10 p-3 rounded-lg">
-                <Eye className="h-8 w-8 text-primary" />
+                <Eye className="h-8 w-8 text-accent-highlight" />
               </div>
               <div>
                 <h2 className="text-lg font-semibold">View Quotes</h2>
@@ -114,13 +114,13 @@ export default function Home() {
         </Card>
 
         <Card
-          className="p-6 bg-accent border border-border cursor-pointer active:scale-[0.98] transition-transform"
+          className="p-6 bg-accent border-accent-highlight cursor-pointer active:scale-[0.98] transition-transform"
           onClick={() => setActiveTab("edit")}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-primary/10 p-3 rounded-lg">
-                <Edit3 className="h-8 w-8 text-primary" />
+                <Edit3 className="h-8 w-8 text-accent-highlight" />
               </div>
               <div>
                 <h2 className="text-lg font-semibold">Edit Existing Quote</h2>
@@ -134,10 +134,10 @@ export default function Home() {
         {/* Recent Quotes Table */}
         <div className="mt-8">
           <h3 className="text-lg font-semibold mb-4">Recent Quotes</h3>
-          <Card className="overflow-hidden bg-card border border-border">
+          <Card className="overflow-hidden bg-background border border-border">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-muted/50 border-b border-border">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Quote #</th>
                     <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Customer</th>
@@ -147,7 +147,7 @@ export default function Home() {
                 </thead>
                 <tbody>
                   {recentQuotes.map((quote) => (
-                    <tr key={quote.id} className="border-b border-border hover:bg-muted transition-colors">
+                    <tr key={quote.id} className="border-b border-border hover:bg-muted/30 transition-colors">
                       <td className="px-4 py-3 font-mono font-medium text-primary whitespace-nowrap">{quote.number}</td>
                       <td className="px-4 py-3 text-foreground">{quote.customer}</td>
                       <td className="px-4 py-3 font-semibold text-foreground">{quote.amount}</td>

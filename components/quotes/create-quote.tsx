@@ -88,6 +88,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
   const [showItemConfig, setShowItemConfig] = useState(false)
   const [itemConfig, setItemConfig] = useState({
     uom: "EA",
+    qty: 1,
     applyTax: false,
   })
 
@@ -135,7 +136,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
       sku: product.name.split(" - ")[1] || "",
       description: product.name.split(" - ")[0] || "",
       uom: itemConfig.uom,
-      qty: 1,
+      qty: itemConfig.qty,
       unitPrice: product.price,
       discount: 0,
       applyTax: itemConfig.applyTax,
@@ -311,6 +312,17 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
               <h2 className="text-lg font-bold mb-4">Configure Item</h2>
               <div className="space-y-4">
                 <div>
+                  <Label className="text-sm font-semibold mb-2 block">Quantity</Label>
+                  <Input
+                    type="number"
+                    value={itemConfig.qty}
+                    onChange={(e) => setItemConfig(prev => ({ ...prev, qty: parseInt(e.target.value) || 1 }))}
+                    min="1"
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
                   <Label className="text-sm font-semibold mb-2 block">Unit of Measure (UOM)</Label>
                   <Select value={itemConfig.uom} onValueChange={(value) => setItemConfig(prev => ({ ...prev, uom: value }))}>
                     <SelectTrigger>
@@ -346,7 +358,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   variant="outline"
                   onClick={() => {
                     setShowItemConfig(false)
-                    setItemConfig({ uom: "EA", applyTax: false })
+                    setItemConfig({ uom: "EA", qty: 1, applyTax: false })
                   }}
                   className="flex-1"
                 >
@@ -357,7 +369,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   onClick={() => {
                     addItem()
                     setShowItemConfig(false)
-                    setItemConfig({ uom: "EA", applyTax: false })
+                    setItemConfig({ uom: "EA", qty: 1, applyTax: false })
                   }}
                   className="flex-1"
                 >

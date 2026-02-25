@@ -85,13 +85,18 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
   const [taxRate, setTaxRate] = useState<number>(6)
   const [items, setItems] = useState<QuoteItem[]>([])
   const [selectedProduct, setSelectedProduct] = useState("")
+  const [showItemConfig, setShowItemConfig] = useState(false)
+  const [itemConfig, setItemConfig] = useState({
+    uom: "EA",
+    applyTax: false,
+  })
 
   // Validation functions
   const getCustomerInfoProgress = () => {
     const fields = [customerName, customerPOC, customerPhone, customerEmail, customerAddress, customerJobNumber, purchaseOrder]
     const filled = fields.filter(field => field.trim() !== "").length
     const total = fields.length
-    const isComplete = customerName.trim() !== "" // Only customer name is required
+    const isComplete = filled === total // ALL fields must be filled
     return { filled, total, isComplete }
   }
 
@@ -99,7 +104,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
     const fields = [etcPOC, etcEmail, etcPhone, etcBranch, etcJobNumber]
     const filled = fields.filter(field => field.trim() !== "").length
     const total = fields.length
-    const isComplete = etcPOC.trim() !== "" && etcEmail.trim() !== "" && etcPhone.trim() !== "" // All three are required
+    const isComplete = filled === total // ALL fields must be filled
     return { filled, total, isComplete }
   }
 
@@ -129,15 +134,23 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
       id: Math.random().toString(),
       sku: product.name.split(" - ")[1] || "",
       description: product.name.split(" - ")[0] || "",
-      uom: "EA",
+      uom: itemConfig.uom,
       qty: 1,
       unitPrice: product.price,
       discount: 0,
-      applyTax: true,
+      applyTax: itemConfig.applyTax,
     }
 
     setItems([...items, newItem])
     setSelectedProduct("")
+  }
+
+  const handleAddItemClick = () => {
+    if (!selectedProduct) {
+      toast.error("Please select a product")
+      return
+    }
+    setShowItemConfig(true)
   }
 
   const removeItem = (id: string) => {
@@ -285,6 +298,72 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   <p className="text-sm text-muted-foreground whitespace-pre-wrap">{notes}</p>
                 </div>
               )}
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Item Configuration Modal */}
+      {showItemConfig && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <Card className="w-full max-w-sm">
+            <div className="p-6">
+              <h2 className="text-lg font-bold mb-4">Configure Item</h2>
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Unit of Measure (UOM)</Label>
+                  <Select value={itemConfig.uom} onValueChange={(value) => setItemConfig(prev => ({ ...prev, uom: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="EA">EA (Each)</SelectItem>
+                      <SelectItem value="FT">FT (Feet)</SelectItem>
+                      <SelectItem value="IN">IN (Inches)</SelectItem>
+                      <SelectItem value="LB">LB (Pounds)</SelectItem>
+                      <SelectItem value="GAL">GAL (Gallons)</SelectItem>
+                      <SelectItem value="HR">HR (Hours)</SelectItem>
+                      <SelectItem value="DAY">DAY (Days)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="apply-tax"
+                    checked={itemConfig.applyTax}
+                    onCheckedChange={(checked) => setItemConfig(prev => ({ ...prev, applyTax: checked as boolean }))}
+                  />
+                  <Label htmlFor="apply-tax" className="text-sm font-medium cursor-pointer">
+                    Apply Tax
+                  </Label>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    setShowItemConfig(false)
+                    setItemConfig({ uom: "EA", applyTax: false })
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    addItem()
+                    setShowItemConfig(false)
+                    setItemConfig({ uom: "EA", applyTax: false })
+                  }}
+                  className="flex-1"
+                >
+                  Add Item
+                </Button>
+              </div>
             </div>
           </Card>
         </div>
@@ -444,7 +523,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   className={`h-5 w-5 transition-transform ${expandedSections.customer ? "" : "-rotate-90"}`}
                 />
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-sm">Customer Information</h3>
+                  <h3 className="font-semibold text-sm">Customer Information <span className="text-red-500">*</span></h3>
                   <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
                     {customerProgress.filled} of {customerProgress.total}
                   </span>
@@ -567,7 +646,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   className={`h-5 w-5 transition-transform ${expandedSections.etc ? "" : "-rotate-90"}`}
                 />
                 <div className="flex items-center gap-2">
-                  <h3 className="font-semibold text-sm">ETC Information</h3>
+                  <h3 className="font-semibold text-sm">ETC Information <span className="text-red-500">*</span></h3>
                   <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
                     {etcProgress.filled} of {etcProgress.total}
                   </span>
@@ -864,10 +943,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
               </Select>
               <Button
                 type="button"
-                onClick={() => {
-                  addItem()
-                  setSelectedProduct("")
-                }}
+                onClick={handleAddItemClick}
                 disabled={!selectedProduct}
                 className="w-full"
               >
@@ -965,7 +1041,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                           )}
                           <tr key={`${item.id}-desc`} className="border-b border-border hover:bg-muted/20">
                             <td colSpan={5} className="px-2 py-1 text-xs text-muted-foreground">
-                              {item.description}
+                              {item.description} • {item.uom} {item.applyTax && <span className="text-red-500">• TAX APPLIED</span>}
                             </td>
                           </tr>
                         </>

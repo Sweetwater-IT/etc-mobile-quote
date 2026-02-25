@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { InputGroup, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 
 interface QuoteItem {
@@ -90,7 +91,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
   const [itemConfig, setItemConfig] = useState({
     uom: "EA",
     qty: 1,
-    applyTax: false,
+    applyTax: "no" as "yes" | "no",
   })
 
   // Validation functions
@@ -140,7 +141,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
       qty: itemConfig.qty,
       unitPrice: product.price,
       discount: 0,
-      applyTax: itemConfig.applyTax,
+      applyTax: itemConfig.applyTax === "yes",
     }
 
     setItems([...items, newItem])
@@ -362,15 +363,26 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   </Select>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="apply-tax"
-                    checked={itemConfig.applyTax}
-                    onCheckedChange={(checked) => setItemConfig(prev => ({ ...prev, applyTax: checked as boolean }))}
-                  />
-                  <Label htmlFor="apply-tax" className="text-sm font-medium cursor-pointer">
-                    Apply Tax
-                  </Label>
+                <div>
+                  <Label className="text-sm font-semibold mb-2 block">Apply Tax</Label>
+                  <RadioGroup
+                    value={itemConfig.applyTax}
+                    onValueChange={(value) => setItemConfig(prev => ({ ...prev, applyTax: value as "yes" | "no" }))}
+                    className="flex flex-row gap-6"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="tax-no" />
+                      <Label htmlFor="tax-no" className="text-sm font-medium cursor-pointer">
+                        No
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="tax-yes" />
+                      <Label htmlFor="tax-yes" className="text-sm font-medium cursor-pointer">
+                        Yes
+                      </Label>
+                    </div>
+                  </RadioGroup>
                 </div>
               </div>
 
@@ -380,7 +392,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   variant="outline"
                   onClick={() => {
                     setShowItemConfig(false)
-                    setItemConfig({ uom: "EA", qty: 1, applyTax: false })
+                    setItemConfig({ uom: "EA", qty: 1, applyTax: "no" })
                   }}
                   className="flex-1"
                 >
@@ -391,7 +403,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                   onClick={() => {
                     addItem()
                     setShowItemConfig(false)
-                    setItemConfig({ uom: "EA", qty: 1, applyTax: false })
+                    setItemConfig({ uom: "EA", qty: 1, applyTax: "no" })
                   }}
                   className="flex-1"
                 >

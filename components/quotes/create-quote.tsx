@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronLeft, Save, X, Trash2, Plus, Eye, ChevronDown, Check, MoreVertical } from "lucide-react"
+import { ChevronLeft, Save, X, Trash2, Plus, Eye, ChevronDown, Check, MoreVertical, Minus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
+import { InputGroup, InputGroupButton, InputGroupInput } from "@/components/ui/input-group"
 import { toast } from "sonner"
 
 interface QuoteItem {
@@ -152,6 +153,14 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
       return
     }
     setShowItemConfig(true)
+  }
+
+  const incrementQuantity = () => {
+    setItemConfig(prev => ({ ...prev, qty: prev.qty + 1 }))
+  }
+
+  const decrementQuantity = () => {
+    setItemConfig(prev => ({ ...prev, qty: Math.max(1, prev.qty - 1) }))
   }
 
   const removeItem = (id: string) => {
@@ -313,13 +322,24 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-semibold mb-2 block">Quantity</Label>
-                  <Input
-                    type="number"
-                    value={itemConfig.qty}
-                    onChange={(e) => setItemConfig(prev => ({ ...prev, qty: parseInt(e.target.value) || 1 }))}
-                    min="1"
-                    className="w-full"
-                  />
+                  <InputGroup>
+                    <InputGroupButton
+                      onClick={decrementQuantity}
+                      disabled={itemConfig.qty <= 1}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </InputGroupButton>
+                    <InputGroupInput
+                      type="number"
+                      value={itemConfig.qty}
+                      onChange={(e) => setItemConfig(prev => ({ ...prev, qty: parseInt(e.target.value) || 1 }))}
+                      min="1"
+                      inputMode="numeric"
+                    />
+                    <InputGroupButton onClick={incrementQuantity}>
+                      <Plus className="h-4 w-4" />
+                    </InputGroupButton>
+                  </InputGroup>
                 </div>
 
                 <div>

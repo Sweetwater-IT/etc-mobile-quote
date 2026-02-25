@@ -322,7 +322,7 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
               <div className="space-y-4">
                 <div>
                   <Label className="text-sm font-semibold mb-2 block">Quantity</Label>
-                  <InputGroup>
+                  <InputGroup className="w-fit">
                     <InputGroupButton
                       onClick={decrementQuantity}
                       disabled={itemConfig.qty <= 1}
@@ -333,8 +333,10 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                       type="number"
                       value={itemConfig.qty}
                       onChange={(e) => setItemConfig(prev => ({ ...prev, qty: parseInt(e.target.value) || 1 }))}
+                      onFocus={(e) => e.target.select()}
                       min="1"
                       inputMode="numeric"
+                      className="w-16 text-center"
                     />
                     <InputGroupButton onClick={incrementQuantity}>
                       <Plus className="h-4 w-4" />

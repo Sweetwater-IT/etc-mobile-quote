@@ -87,10 +87,27 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
   const [selectedProduct, setSelectedProduct] = useState("")
 
   // Validation functions
-  const isCustomerInfoComplete = () => customerName && etcPOC && etcEmail && etcPhone
-  const isEtcInfoComplete = () => etcPOC && etcEmail && etcPhone
+  const getCustomerInfoProgress = () => {
+    const fields = [customerName, customerPOC, customerPhone, customerEmail, customerAddress, customerJobNumber, purchaseOrder]
+    const filled = fields.filter(field => field.trim() !== "").length
+    const total = fields.length
+    const isComplete = customerName.trim() !== "" // Only customer name is required
+    return { filled, total, isComplete }
+  }
+
+  const getEtcInfoProgress = () => {
+    const fields = [etcPOC, etcEmail, etcPhone, etcBranch, etcJobNumber]
+    const filled = fields.filter(field => field.trim() !== "").length
+    const total = fields.length
+    const isComplete = etcPOC.trim() !== "" && etcEmail.trim() !== "" && etcPhone.trim() !== "" // All three are required
+    return { filled, total, isComplete }
+  }
+
   const isJobDetailsComplete = () => township || county || srRoute || jobAddress || ecmsNumber
   const isProjectDetailsComplete = () => bidDate || startDate || endDate
+
+  const customerProgress = getCustomerInfoProgress()
+  const etcProgress = getEtcInfoProgress()
 
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
@@ -426,9 +443,14 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                 <ChevronDown
                   className={`h-5 w-5 transition-transform ${expandedSections.customer ? "" : "-rotate-90"}`}
                 />
-                <h3 className="font-semibold text-sm">Customer Information</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">Customer Information</h3>
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                    {customerProgress.filled} of {customerProgress.total}
+                  </span>
+                </div>
               </div>
-              {isCustomerInfoComplete() && (
+              {customerProgress.isComplete && (
                 <Check className="h-5 w-5 text-green-600" />
               )}
             </button>
@@ -544,9 +566,14 @@ export default function CreateQuote({ onBack }: CreateQuoteProps) {
                 <ChevronDown
                   className={`h-5 w-5 transition-transform ${expandedSections.etc ? "" : "-rotate-90"}`}
                 />
-                <h3 className="font-semibold text-sm">ETC Information</h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">ETC Information</h3>
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                    {etcProgress.filled} of {etcProgress.total}
+                  </span>
+                </div>
               </div>
-              {isEtcInfoComplete() && (
+              {etcProgress.isComplete && (
                 <Check className="h-5 w-5 text-green-600" />
               )}
             </button>
